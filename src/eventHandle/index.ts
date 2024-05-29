@@ -9,6 +9,10 @@ export class ErrorEventHandle extends EventEmitter {
     public close(): void {
         this.removeAllListeners();
     }
+
+    emit(event: string | symbol, ...args: any[]): boolean {
+        return super.emit(event, ...args);
+    }
 }
 
 export default new ErrorEventHandle();

@@ -1,28 +1,23 @@
-import OrError, { TOrError } from "../src/index";
-import OrErrorEvent from "../src/eventHandle";
+import OrError, { OrErrorEvent, TOrError } from "../src/index";
 
 describe("OrError Class", () => {
     beforeEach(() => {
-        // Limpar o callback estático antes de cada teste
-        OrError.setEventHandle(OrErrorEvent);
+        OrErrorEvent.on("error", (data: TOrError) => {});
     });
 
     test("should throw an error with the correct message", () => {
         const errorData: TOrError = {
             message: "Test error message"
         };
-
         const errorEvent = new OrError(errorData);
-
         try {
             errorEvent.throw();
         } catch (e: any) {
-            console.log(e.message);
-            // expect(JSON.parse(e.message)).toMatchObject({
-            //     message: "Test error message",
-            //     level: "error",
-            //     status: 500
-            // });
+            expect(JSON.parse(e.message)).toMatchObject({
+                message: "Test error message",
+                level: "error",
+                status: 500
+            });
         }
     });
 

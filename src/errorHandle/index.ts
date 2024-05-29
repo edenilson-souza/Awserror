@@ -1,8 +1,7 @@
 import EventEmitter from "node:events";
+import { OrErrorEvent } from "..";
 
 export class OrError {
-    private static eventHandle: EventEmitter;
-
     private message: string;
     private level: "info" | "error" | "warning" | "debug" | "success" | "critical" | "alert" | "emergency";
     private status?: number;
@@ -29,32 +28,27 @@ export class OrError {
         this.timestamp = data.timestamp ?? new Date();
     }
 
-    static setEventHandle(eventHandle: EventEmitter): void {
-        this.eventHandle = eventHandle;
-    }
-
-    static getEventHandle(): EventEmitter {
-        return this.eventHandle;
-    }
-
     throw(outputMessage?: TypeErrorMessageOutput): never {
-        this.emitEvent().catch((error: any) => console.log(error.message));
+        try {
+            this.emitEvent();
+            this.newThrow(outputMessage);
+        } catch (error: any) {
+            throw error;
+        }
+    }
 
+    newThrow(outputMessage?: TypeErrorMessageOutput): never {
         let atts = { ...outputMessage, level: true, status: true, code: true, timestamp: true };
         const data: TOrError = this.getError(atts);
         const dataToString: string = this.ErrorMessage(data);
         throw new Error(dataToString);
     }
 
-    async emitEvent(): Promise<void> {
-        try {
-            const data = this.getAll();
-            async () => OrError.eventHandle.emit("error", data);
-            if (this.code) {
-                async () => OrError.eventHandle.emit(this.code!, data);
-            }
-        } catch (error: any) {
-            throw error;
+    emitEvent(): void {
+        const data = this.getAll();
+        OrErrorEvent.emit("error", data);
+        if (this.code) {
+            OrErrorEvent.emit(this.code!, data);
         }
     }
 
