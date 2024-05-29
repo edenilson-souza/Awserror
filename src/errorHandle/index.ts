@@ -1,4 +1,3 @@
-import EventEmitter from "node:events";
 import { OrErrorEvent } from "..";
 
 export class OrError {
@@ -37,7 +36,7 @@ export class OrError {
         }
     }
 
-    newThrow(outputMessage?: TypeErrorMessageOutput): never {
+    private newThrow(outputMessage?: TypeErrorMessageOutput): never {
         let atts = { ...outputMessage, level: true, status: true, code: true, timestamp: true };
         const data: TOrError = this.getError(atts);
         const dataToString: string = this.ErrorMessage(data);

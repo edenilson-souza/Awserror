@@ -15,9 +15,9 @@ npm i or-error
 
 Para utilizar a biblioteca, importe a classe OrError em seu código e instancie-a conforme necessário. Abaixo está um exemplo de uso básico:
 
-import { OrError } from 'or-error';
-
 ```typescript
+import { OrError } from "or-error";
+
 // Criando um novo erro
 const error = new OrError({
     message: "Erro interno do servidor",
@@ -43,7 +43,11 @@ try {
 **throw(output?: TypeErrorMessageOutput): never** Este método lança o erro. Ele pode opcionalmente receber um objeto TypeErrorMessageOutput para personalizar a
 mensagem de erro.
 
+**emitEvent(): void** Emite um evento com todos os detalhes do erro como um objeto `TOrError`.
+
 **getAll(): TOrError** Retorna todos os detalhes do erro como um objeto `TOrError`.
+
+**getError(atts?: TypeErrorMessageOutput): TOrError** Retorna os detalhes do erro como um objeto `TOrError` com apenas os atributos especificados em `atts`.
 
 **getMessage(): string** Retorna a mensagem formatada do erro, incluindo o nível de gravidade.
 
