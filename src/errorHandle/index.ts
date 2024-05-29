@@ -1,3 +1,4 @@
+import { error } from "console";
 import { OrErrorEvent } from "..";
 
 export class OrError {
@@ -29,7 +30,7 @@ export class OrError {
 
     throw(outputMessage?: TypeErrorMessageOutput): never {
         try {
-            this.emit({ error: true });
+            this.emit({ errorOnly: true });
             this.newThrow(outputMessage);
         } catch (error: any) {
             throw error;
@@ -43,12 +44,13 @@ export class OrError {
         throw new Error(dataToString);
     }
 
-    emit(emit: TypeErrorEmit = { error: false }): void {
+    emit(emit: TypeErrorEmit): void {
         const data = this.getAll();
-        if (emit.error) {
+        if (emit.errorOnly) {
             OrErrorEvent.emit("error", data);
             return;
         }
+        if (emit.error) OrErrorEvent.emit("error", data); // Tornar possível emitir o evento "error" mesmo sem chamar a função throw
         if (this.level) OrErrorEvent.emit(this.level!, data);
         if (this.status) OrErrorEvent.emit(this.status.toString(), data);
         if (this.code) OrErrorEvent.emit(this.code!, data);
@@ -117,7 +119,7 @@ export type TOrError = {
     stack?: string;
 };
 
-export type TypeErrorEmit = TypeErrorMessageOutput & { error: boolean };
+export type TypeErrorEmit = TypeErrorMessageOutput & { error?: boolean; errorOnly?: boolean };
 
 export type TypeErrorMessageOutput = {
     level?: boolean;
