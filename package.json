@@ -1,6 +1,6 @@
 {
-    "name": "orerror-2",
-    "version": "1.0.3",
+    "name": "or-error",
+    "version": "1.0.0",
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
@@ -17,8 +17,12 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/usuario/minha-biblioteca.git"
+        "url": "https://github.com/edenilson-souza/orError.git"
     },
+    "bugs": {
+        "url": "https://github.com/edenilson-souza/orError/issues"
+    },
+    "homepage": "https://github.com/edenilson-souza/orError",
     "type": "commonjs",
     "devDependencies": {
         "@types/jest": "^29.5.12",
