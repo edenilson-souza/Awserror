@@ -1,4 +1,4 @@
-# OrError 2
+# OrError
 
 A biblioteca OrError fornece uma classe para lidar com erros em JavaScript/TypeScript de uma maneira estruturada e flexível. Ela permite criar objetos de erro
 com diferentes níveis de gravidade, dados adicionais e emitir eventos associados aos erros.
