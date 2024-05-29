@@ -51,13 +51,13 @@ export class OrError {
             return;
         }
         if (emit.error) OrErrorEvent.emit("error", data); // Tornar possível emitir o evento "error" mesmo sem chamar a função throw
-        if (this.level) OrErrorEvent.emit(this.level!, data);
-        if (this.status) OrErrorEvent.emit(this.status.toString(), data);
-        if (this.code) OrErrorEvent.emit(this.code!, data);
-        if (this.entity) OrErrorEvent.emit(this.entity, data);
-        if (this.action) OrErrorEvent.emit(this.action, data);
-        if (this.system) OrErrorEvent.emit(this.system, data);
-        if (this.created_by) OrErrorEvent.emit(this.created_by, data);
+        if (emit.level && this.level) OrErrorEvent.emit(this.level, data);
+        if (emit.status && this.status) OrErrorEvent.emit(this.status!.toString(), data);
+        if (emit.code && this.code) OrErrorEvent.emit(this.code, data);
+        if (emit.entity && this.entity) OrErrorEvent.emit(this.entity, data);
+        if (emit.action && this.action) OrErrorEvent.emit(this.action, data);
+        if (emit.system && this.system) OrErrorEvent.emit(this.system, data);
+        if (emit.created_by && this.created_by) OrErrorEvent.emit(this.created_by, data);
     }
 
     getAll(): TOrError {
