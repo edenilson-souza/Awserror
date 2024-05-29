@@ -38,8 +38,7 @@ export class OrError {
     }
 
     throw(outputMessage?: TypeErrorMessageOutput): never {
-        const allData = this.getAll();
-        this.emitEvents(allData);
+        this.emitEvent().catch((error: any) => console.log(error.message));
 
         let atts = { ...outputMessage, level: true, status: true, code: true, timestamp: true };
         const data: TOrError = this.getError(atts);
@@ -47,10 +46,15 @@ export class OrError {
         throw new Error(dataToString);
     }
 
-    private async emitEvents(data: TOrError): Promise<void> {
-        OrError.eventHandle.emit("error", data);
-        if (this.code) {
-            OrError.eventHandle.emit(this.code, data);
+    async emitEvent(): Promise<void> {
+        try {
+            const data = this.getAll();
+            async () => OrError.eventHandle.emit("error", data);
+            if (this.code) {
+                async () => OrError.eventHandle.emit(this.code!, data);
+            }
+        } catch (error: any) {
+            throw error;
         }
     }
 
