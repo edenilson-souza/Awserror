@@ -29,7 +29,7 @@ export class OrError {
 
     throw(outputMessage?: TypeErrorMessageOutput): never {
         try {
-            this.emitEvent();
+            this.emit({ error: true });
             this.newThrow(outputMessage);
         } catch (error: any) {
             throw error;
@@ -43,12 +43,19 @@ export class OrError {
         throw new Error(dataToString);
     }
 
-    emitEvent(): void {
+    emit(emit: TypeErrorEmit = { error: false }): void {
         const data = this.getAll();
-        OrErrorEvent.emit("error", data);
-        if (this.code) {
-            OrErrorEvent.emit(this.code!, data);
+        if (emit.error) {
+            OrErrorEvent.emit("error", data);
+            return;
         }
+        if (this.level) OrErrorEvent.emit(this.level!, data);
+        if (this.status) OrErrorEvent.emit(this.status.toString(), data);
+        if (this.code) OrErrorEvent.emit(this.code!, data);
+        if (this.entity) OrErrorEvent.emit(this.entity, data);
+        if (this.action) OrErrorEvent.emit(this.action, data);
+        if (this.system) OrErrorEvent.emit(this.system, data);
+        if (this.created_by) OrErrorEvent.emit(this.created_by, data);
     }
 
     getAll(): TOrError {
@@ -109,6 +116,8 @@ export type TOrError = {
     system?: string;
     stack?: string;
 };
+
+export type TypeErrorEmit = TypeErrorMessageOutput & { error: boolean };
 
 export type TypeErrorMessageOutput = {
     level?: boolean;
