@@ -90,7 +90,7 @@ A classe OrError emite os seguintes eventos:
 ## Exemplo
 
 ```typescript
-import { OrError } from "or-error";
+import { OrError, OrErrorEvent } from "or-error";
 
 // Função para simular acesso a um recurso no servidor
 function accessResource(resource: string): void {
@@ -107,7 +107,6 @@ function accessResource(resource: string): void {
         console.log("Recurso acessado com sucesso!");
     }
 }
-
 // Tentativa de acessar um recurso inválido
 try {
     accessResource("invalido");
@@ -121,4 +120,13 @@ try {
 } catch (err) {
     console.error("Erro:", err.message); // Não deve alcançar esta linha
 }
+
+OrErrorEvent.on("error", error => {
+    // Todo erro lançado será capturado aqui
+});
+
+OrErrorEvent.on("RESOURCE_NOT_FOUND", error => {
+    // Erros específicos podem ser capturados por código
+    console.error("Erro específico:", error.message);
+});
 ```
