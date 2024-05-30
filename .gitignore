@@ -1,0 +1,11 @@
+/node_modules
+*-lock.json
+*.tsbuildinfo
+
+# Ignore test-related files
+/coverage.data
+/coverage/
+
+# Build files
+/dist
+
