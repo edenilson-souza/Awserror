@@ -23,7 +23,7 @@ const error = new OrError({
     message: "Internal server error",
     level: "error",
     status: 500,
-    code: "INTERNAL_ERROR",
+    specificException: "INTERNAL_ERROR",
     entity: "Server",
     action: "Start",
     data: { additionalInfo: "Some additional information" },
@@ -62,6 +62,15 @@ You can specify which attributes should be included in the error message and/or 
 Below are some examples of how to do this:
 
 ```typescript
+// Creating a new error
+const error = new OrError({
+    message: "Internal server error",
+    level: "error",
+    status: 500,
+    exceptionCode: "unknown error",
+    specificException: "INTERNAL_ERROR"
+});
+
 // Customize the error output
 // An "error" event will be emitted with all the error attributes
 error.throw({ message: true, level: true, status: true, timestamp: false });
@@ -75,20 +84,20 @@ error.throw({ message: true, level: true, status: true, timestamp: false });
 
 //
 // Emitting only a specific event
-error.emit({ code: true });
+error.emit({ specificException: true });
 // An "INTERNAL_ERROR" event will be emitted with all the error attributes
 //
 
 //
 // Throwing an error and emitting a specific event
-error.emit({ code: true }).throw();
+error.emit({ specificException: true }).throw();
 // An "INTERNAL_ERROR" event will be emitted with all the error attributes
 // An "error" event will be emitted with all the error attributes
 //
 
 //
 // Emitting a default event and a specific event
-error.emit({ code: true, error: true });
+error.emit({ specificException: true, error: true });
 // An "INTERNAL_ERROR" event will be emitted with all the error attributes
 // An "error" event will be emitted with all the error attributes
 ```
@@ -112,7 +121,8 @@ error.emit({ code: true, error: true });
 -   message (string): The error message.
 -   level (string, optional): The severity level of the error.
 -   status (number, optional): The HTTP status code associated with the error.
--   code (string, optional): A unique code to identify the type of error.
+-   exceptionCode (string, optional): A unique code to identify the error.
+-   specificException (string, optional): A custom code to identify the type of error.
 -   entity (string, optional): The entity affected by the error.
 -   action (string, optional): The action that was being performed when the error occurred.
 -   data (any, optional): Additional data related to the error.
@@ -126,7 +136,8 @@ fields:
 
 -   level
 -   status
--   code
+-   exceptionCode
+-   specificException
 -   entity
 -   action
 -   data
@@ -152,14 +163,16 @@ import { OrError, OrErrorEvent } from "orerror";
 // Function to simulate access to a resource on the server
 function accessResource(resource: string): void {
     if (resource !== "valid") {
-        new OrError({
+        const error = new OrError({
             message: "Error accessing resource",
             level: "error",
             status: 404,
-            code: "RESOURCE_NOT_FOUND",
+            specificException: "RESOURCE_NOT_FOUND",
             data: { resource },
             created_by: "User XYZ"
-        }).throw();
+        });
+        error.emit({ specificException: true }); // Emit specific event errors
+        error.throw(); // Emit default event errors
     } else {
         console.log("Resource accessed successfully!");
     }
