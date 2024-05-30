@@ -1,10 +1,13 @@
+import { spec } from "node:test/reporters";
 import { OrErrorEvent } from "..";
+import { ExceptionCode, HttpStatusCode } from "./types";
 
 export class OrError {
     private message: string;
     private level: "info" | "error" | "warning" | "debug" | "success" | "critical" | "alert" | "emergency";
-    private status?: number;
-    private code?: string;
+    private status?: HttpStatusCode;
+    private exceptionCode?: ExceptionCode;
+    private specificException?: string;
     private entity?: string;
     private action?: string;
     private data?: any;
@@ -18,7 +21,8 @@ export class OrError {
         this.message = data.message;
         this.level = data.level ?? "error";
         this.status = data.status ?? 500;
-        this.code = data.code;
+        this.exceptionCode = data.exceptionCode;
+        this.specificException = data.specificException;
         this.entity = data.entity;
         this.action = data.action;
         this.data = data.data;
@@ -59,7 +63,8 @@ export class OrError {
         if (emit.error) OrErrorEvent.emit("error", data); // Tornar possível emitir o evento "error" mesmo sem chamar a função throw
         if (emit.level && this.level) OrErrorEvent.emit(this.level, data);
         if (emit.status && this.status) OrErrorEvent.emit(this.status!.toString(), data);
-        if (emit.code && this.code) OrErrorEvent.emit(this.code, data);
+        if (emit.exceptionCode && this.exceptionCode) OrErrorEvent.emit(this.exceptionCode, data);
+        if (emit.specificException && this.specificException) OrErrorEvent.emit(this.specificException, data);
         if (emit.entity && this.entity) OrErrorEvent.emit(this.entity, data);
         if (emit.action && this.action) OrErrorEvent.emit(this.action, data);
         if (emit.system && this.system) OrErrorEvent.emit(this.system, data);
@@ -72,7 +77,8 @@ export class OrError {
             message: this.message,
             level: this.level,
             status: this.status,
-            code: this.code,
+            exceptionCode: this.exceptionCode,
+            specificException: this.specificException,
             entity: this.entity,
             action: this.action,
             data: this.data,
@@ -89,7 +95,8 @@ export class OrError {
         if (atts?.message) errorEvent.message = this.message;
         if (atts?.level) errorEvent.level = this.level;
         if (atts?.status) errorEvent.status = this.status;
-        if (atts?.code) errorEvent.code = this.code;
+        if (atts?.exceptionCode) errorEvent.exceptionCode = this.exceptionCode;
+        if (atts?.specificException) errorEvent.specificException = this.specificException;
         if (atts?.entity) errorEvent.entity = this.entity;
         if (atts?.action) errorEvent.action = this.action;
         if (atts?.data) errorEvent.data = this.data;
@@ -115,8 +122,9 @@ export class OrError {
 export type TOrError = {
     message?: string;
     level?: "info" | "error" | "warning" | "debug" | "success" | "critical" | "alert" | "emergency";
-    status?: number;
-    code?: string;
+    status?: HttpStatusCode;
+    exceptionCode?: ExceptionCode;
+    specificException?: string;
     entity?: string;
     action?: string;
     data?: any;
@@ -132,7 +140,8 @@ export type TypeErrorMessageOutput = {
     message?: boolean;
     level?: boolean;
     status?: boolean;
-    code?: boolean;
+    exceptionCode?: boolean;
+    specificException?: boolean;
     entity?: boolean;
     action?: boolean;
     data?: boolean;

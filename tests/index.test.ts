@@ -30,7 +30,8 @@ describe("OrError Class", () => {
             message: "Test error message",
             level: "error",
             status: 404,
-            code: "NOT_FOUND",
+            exceptionCode: "not found",
+            specificException
             entity: "User",
             action: "GetUser",
             data: { userId: 123 },
@@ -46,7 +47,7 @@ describe("OrError Class", () => {
             message: "Test error message",
             level: "error",
             status: 404,
-            code: "NOT_FOUND",
+            exceptionCode: "not found",
             entity: "User",
             action: "GetUser",
             data: { userId: 123 },
