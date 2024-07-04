@@ -41,6 +41,10 @@ export class OrError {
         }
     }
 
+    throwWithoutEmit(outputMessage?: TypeErrorMessageOutput): never {
+        this.newThrow(outputMessage);
+    }
+
     private newThrow(outputMessage?: TypeErrorMessageOutput): never {
         const atts: TypeErrorMessageOutput = this.getOutputDefault(outputMessage);
         const data: TOrError = this.getError(atts);
@@ -54,9 +58,10 @@ export class OrError {
         return outputDefault;
     }
 
-    emit(emit: TypeErrorEmit): OrError {
+    emit(emit?: TypeErrorEmit): OrError {
         const data = this.getAll();
-        if (emit.errorOnly) {
+
+        if (!emit || emit.errorOnly) {
             OrErrorEvent.emit("error", data);
             return this;
         }
