@@ -1,10 +1,11 @@
-import { spec } from "node:test/reporters";
 import { OrErrorEvent } from "..";
 import { ExceptionCode, HttpStatusCode } from "./types";
+import { randomUUID } from "node:crypto";
 
 export class OrError {
     private message: string;
     private level: "info" | "error" | "warning" | "debug" | "success" | "critical" | "alert" | "emergency";
+    private idLog?: string;
     private status?: HttpStatusCode;
     private exceptionCode?: ExceptionCode;
     private specificException?: string;
@@ -20,6 +21,7 @@ export class OrError {
         if (!data.message) throw new Error("Message is required");
         this.message = data.message;
         this.level = data.level ?? "error";
+        this.idLog = data.idLog ?? randomUUID();
         this.status = data.status ?? 500;
         this.exceptionCode = data.exceptionCode;
         this.specificException = data.specificException;
@@ -53,7 +55,7 @@ export class OrError {
     }
 
     private getOutputDefault(outputMessage?: TypeErrorMessageOutput): TypeErrorMessageOutput {
-        let outputDefault: TypeErrorMessageOutput = { message: true, data: true, level: true, status: true, timestamp: true };
+        let outputDefault: TypeErrorMessageOutput = { idLog: true, message: true, data: true, level: true, status: true, timestamp: true };
         if (outputMessage) outputDefault = outputMessage;
         return outputDefault;
     }
@@ -81,6 +83,7 @@ export class OrError {
         const data = {
             message: this.message,
             level: this.level,
+            idLog: this.idLog,
             status: this.status,
             exceptionCode: this.exceptionCode,
             specificException: this.specificException,
@@ -99,6 +102,7 @@ export class OrError {
         let errorEvent: TOrError = {};
         if (atts?.message) errorEvent.message = this.message;
         if (atts?.level) errorEvent.level = this.level;
+        if (atts?.idLog) errorEvent.idLog = this.idLog;
         if (atts?.status) errorEvent.status = this.status;
         if (atts?.exceptionCode) errorEvent.exceptionCode = this.exceptionCode;
         if (atts?.specificException) errorEvent.specificException = this.specificException;
@@ -127,6 +131,7 @@ export class OrError {
 export type TOrError = {
     message?: string;
     level?: "info" | "error" | "warning" | "debug" | "success" | "critical" | "alert" | "emergency";
+    idLog?: string;
     status?: HttpStatusCode;
     exceptionCode?: ExceptionCode;
     specificException?: string;
@@ -142,6 +147,7 @@ export type TOrError = {
 export type TypeErrorEmit = TypeErrorMessageOutput & { error?: boolean; errorOnly?: boolean };
 
 export type TypeErrorMessageOutput = {
+    idLog?: boolean;
     message?: boolean;
     level?: boolean;
     status?: boolean;
